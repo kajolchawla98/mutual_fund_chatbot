@@ -238,7 +238,7 @@ export default function App() {
               <div className="brand-icon">
                 <TrendingUp size={20} />
               </div>
-              <h1 className="brand-title">GROWW MF AI</h1>
+              <h1 className="brand-title">GROWW MF AI Chatbot</h1>
               <span className="brand-badge">AI Powered</span>
             </div>
           </div>
@@ -366,7 +366,7 @@ export default function App() {
                 type="text"
                 className="chat-input"
                 id="chat-input"
-                placeholder="Ask about HDFC, ICICI, Motilal Oswal, or Aditya Birla funds..."
+                placeholder="Ask about HDFC, ICICI, Motilal Oswal funds..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
