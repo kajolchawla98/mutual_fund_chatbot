@@ -48,7 +48,8 @@ export default function App() {
     setIsLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:8000/chat/query', {
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+      const response = await axios.post(`${apiBaseUrl}/chat/query`, {
         session_id: 'session_' + Date.now(),
         user_message: query,
       });
