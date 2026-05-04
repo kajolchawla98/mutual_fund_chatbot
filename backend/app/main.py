@@ -64,6 +64,28 @@ def get_vector_store():
         vector_store = VectorStore(persist_directory=db_path)
     return vector_store
 
+def auto_ingest_if_empty():
+    """Run ingestion in background if the vector store has no data."""
+    try:
+        vs = get_vector_store()
+        results = vs.search("HDFC", top_k=1)
+        if not results:
+            print("[STARTUP] Vector store is empty. Triggering background ingestion...")
+            import threading
+            t = threading.Thread(target=run_ingestion, daemon=True)
+            t.start()
+        else:
+            print(f"[STARTUP] Vector store has data. Skipping ingestion.")
+    except Exception as e:
+        print(f"[STARTUP] Could not check vector store: {e}. Triggering ingestion...")
+        import threading
+        t = threading.Thread(target=run_ingestion, daemon=True)
+        t.start()
+
+@app.on_event("startup")
+async def startup_event():
+    auto_ingest_if_empty()
+
 # Rate limiting dictionary (very simple for demo purposes)
 request_log = {}
 
@@ -130,12 +152,15 @@ async def chat_query(request: ChatQueryRequest):
         print(f"[DEBUG]   Chunk {i}: distance={chunk.get('distance')}, text={chunk['text'][:100]}...")
     
     if not retrieved_chunks:
-        fallback = validator.get_safe_fallback()
-        last_updated = fallback.split("Last updated from sources: ")[-1]
         return ChatQueryResponse(
-            answer_text=fallback,
+            answer_text=(
+                "The specific information is not available in our current data. "
+                "However, I can help you with information on these funds: "
+                "HDFC Mid-Cap, ICICI Bluechip, Motilal Oswal Small Cap"
+            ),
             refusal_flag=False,
-            last_updated_date=last_updated
+            citation_url=None,
+            last_updated_date=None
         )
 
     # Phase 5: Generation

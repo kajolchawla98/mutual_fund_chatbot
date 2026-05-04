@@ -65,8 +65,8 @@ class ResponseValidator:
 
     def get_safe_fallback(self, url=None):
         """Returns a safe fallback if validation hard-fails."""
-        safe_link = url if url else "https://www.amfiindia.com/"
         return (
-            f"I apologize, but I could not formulate a confident factual response. "
-            f"Please refer to the official document: [Official Source]({safe_link})"
+            "The specific information is not available in our current data. "
+            "However, I can help you with information on these funds: "
+            "HDFC Mid-Cap, ICICI Bluechip, Motilal Oswal Small Cap"
         )
