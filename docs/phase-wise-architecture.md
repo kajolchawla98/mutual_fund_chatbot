@@ -82,7 +82,7 @@ Create a controlled registry of approved sources for ingestion and citation.
   - Tier 1: Allowlisted scheme URLs + their linked official docs (factsheet, KIM, SID)
   - Tier 2: AMFI/SEBI educational/guidance pages
   - Tier 3: Official statement/tax download guides
-- Define freshness SLO:
+- Define freshness SLO (Executed via GitHub Actions cron workflows):
   - Daily check for URL/document updates
   - Weekly full re-index
 
@@ -96,31 +96,30 @@ Create a controlled registry of approved sources for ingestion and citation.
 ---
 
 ## Phase 2: Data Ingestion and Normalization Pipeline
-### Objective
-Ingest, clean, and normalize official documents into machine-retrievable text blocks.
 
-### Inputs
-- Approved source registry
+This phase is divided into three sub-phases to ensure modular implementation:
 
-### Activities
-- Build ingestion jobs:
-  - HTML fetch + content extraction
-  - PDF parsing (factsheets, SID, KIM)
-  - Structured metadata extraction
-- Normalize extracted fields:
-  - Scheme name, expense ratio, exit load, minimum SIP, lock-in, benchmark, riskometer, effective date
-- Chunking strategy:
-  - 300-800 tokens/chunk
-  - Section-aware chunking (retain heading context)
-  - Overlap 50-100 tokens
-- Store each chunk with metadata:
-  - `source_url`, `source_title`, `doc_type`, `scheme_name`, `effective_date`, `last_updated`
+### Phase 2.1: Content Fetching and Extraction
+**Objective:** Retrieve raw data from the approved source registry.
+**Activities:**
+- Build ingestion jobs for HTML fetch + content extraction.
+- Implement PDF parsing for official documents (factsheets, SID, KIM).
+**Deliverables:** Raw content repository and fetching scripts.
 
-### Deliverables
-- ETL pipeline jobs
-- Normalized document repository
+### Phase 2.2: Data Normalization and Metadata Extraction
+**Objective:** Clean the raw data and extract structured metadata fields.
+**Activities:**
+- Normalize extracted fields: Scheme name, expense ratio, exit load, minimum SIP, lock-in, benchmark, riskometer, effective date.
+**Deliverables:** Normalization utilities and structured metadata records.
 
-### Exit Criteria
+### Phase 2.3: Text Chunking and Structuring
+**Objective:** Prepare the normalized text for vector embeddings.
+**Activities:**
+- Implement chunking strategy: 300-800 tokens/chunk, Section-aware chunking (retain heading context), Overlap 50-100 tokens.
+- Format for storage: Store each chunk with metadata (`source_url`, `source_title`, `doc_type`, `scheme_name`, `effective_date`, `last_updated`).
+**Deliverables:** Chunking logic and normalized document repository ready for the vector store.
+
+### Exit Criteria (Phase 2)
 - 95%+ extraction success from approved sources; metadata completeness validated.
 
 ---
@@ -245,17 +244,20 @@ Provide compliant and user-friendly refusal behavior for non-factual queries.
 
 ## Phase 7: Frontend Experience (Groww-Like Theme)
 ### Objective
-Deliver a clean, familiar chat interface aligned with the problem statement.
+Deliver a clean, familiar web interface and chat widget aligned with the problem statement.
 
 ### Inputs
 - UI requirements and response API
 
 ### Activities
-- Build UI components:
-  - Floating `Chat with us` button
+- Build Landing Page UI:
+  - Groww-themed hero section, header, and descriptive project content.
+- Build Chat Widget UI:
+  - Floating `Chat with us` button as a pop-up widget over the landing page.
+  - Chat header title: `Groww Mutual fund Chat bot`
   - Bot open animation
   - Welcome text: `How can I help you today?`
-  - Three sample factual questions
+  - Three actionable sample factual questions for the user to select.
   - Disclaimer: `Facts-only. No investment advice.`
   - Conversation history panel
 - Accessibility:
@@ -267,7 +269,7 @@ Deliver a clean, familiar chat interface aligned with the problem statement.
   - Display footer date
 
 ### Deliverables
-- Production-ready chat UI
+- Production-ready landing page and chat widget UI
 - Session-level conversation persistence
 
 ### Exit Criteria
@@ -363,12 +365,43 @@ Run the assistant reliably and keep answers fresh as source documents change.
 ### Exit Criteria
 - Stable production performance and regular quality gains.
 
+---
+
+## Phase 11: Deployment Plan
+### Objective
+Deploy the application to production environments with automated CI/CD.
+
+### Infrastructure
+- **Backend API**: [Railway](https://railway.app/)
+  - Why: Seamless support for Python/FastAPI, managed PostgreSQL/ChromaDB possibilities, and excellent developer experience.
+  - Config: `railway.toml` or `Procfile` for startup commands.
+  - Env: `GROQ_API_KEY`, `GROQ_MODEL`, `PORT`.
+- **Frontend UI**: [Vercel](https://vercel.com/)
+  - Why: Best-in-class support for React/Vite, global CDN, and automated preview deployments.
+  - Config: `vercel.json` for routing/rewrites if needed.
+  - Env: `VITE_API_BASE_URL` (pointing to the Railway backend).
+
+### CI/CD Workflow
+1. **GitHub Integration**: Connect both Railway and Vercel to the GitHub repository.
+2. **Automated Deployments**:
+   - Push to `main` triggers a production deployment.
+   - Pull Requests trigger preview deployments for testing.
+3. **Health Monitoring**: Configure Railway's built-in health checks to monitor the `/health` endpoint.
+
+### Exit Criteria
+- Backend reachable via public Railway URL.
+- Frontend live on Vercel and successfully communicating with the backend.
+- Deployment verified as stable and secure.
+
+---
+
+
 ## 4) Suggested Technical Stack (Lightweight)
 - **Frontend**: React/Next.js + component library for chat UX
 - **Backend API**: Node.js (Express/Fastify) or Python (FastAPI)
-- **Ingestion**: Python workers for scraping/parsing PDFs
+- **Ingestion**: Python workers for scraping/parsing PDFs (Scheduled via GitHub Actions cron jobs to ensure data freshness)
 - **LLM for Retrieval Assistance**: Groq fast model (query rewrite + retrieval reranking)
-- **Embeddings/Retrieval**: Open-source vector DB (Qdrant/FAISS/Chroma) + metadata DB
+- **Embeddings/Retrieval**: Chroma DB (for embeddings) + metadata DB
 - **Storage**: Postgres for metadata, object storage for raw docs
 - **Observability**: Structured logs + metrics dashboard
 

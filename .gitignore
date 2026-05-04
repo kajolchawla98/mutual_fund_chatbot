@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Database
+backend/chroma_db/
+backend/refusal_audit.log
+
+# Logs and tests
+backend/test_api.py
+backend/inspect_db_v2.py
+backend/clear_db.py
+backend/app/inspect_db.py
+*.log
+
+# Node / Frontend
+node_modules/
+dist/
+.vite/
+frontend/node_modules/
+frontend/dist/
+
+# OS
+.DS_Store
+Thumbs.db
