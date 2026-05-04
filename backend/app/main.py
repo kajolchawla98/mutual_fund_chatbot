@@ -55,14 +55,11 @@ validator = ResponseValidator()
 refusal_handler = RefusalHandler()
 llm_assistant = LLMAssistant()
 
-# Lazy load vector store
-vector_store = None
+# Vector store is created fresh per request to avoid stale cache after ingestion
 def get_vector_store():
-    global vector_store
-    if not vector_store:
-        db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "chroma_db")
-        vector_store = VectorStore(persist_directory=db_path)
-    return vector_store
+    """Always return a fresh VectorStore so new ingestion data is visible."""
+    db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "chroma_db")
+    return VectorStore(persist_directory=db_path)
 
 def auto_ingest_if_empty():
     """Run ingestion in background if the vector store has no data."""
@@ -75,7 +72,7 @@ def auto_ingest_if_empty():
             t = threading.Thread(target=run_ingestion, daemon=True)
             t.start()
         else:
-            print(f"[STARTUP] Vector store has data. Skipping ingestion.")
+            print(f"[STARTUP] Vector store has data ({len(results)} results). Skipping ingestion.")
     except Exception as e:
         print(f"[STARTUP] Could not check vector store: {e}. Triggering ingestion...")
         import threading
