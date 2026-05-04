@@ -44,7 +44,7 @@ class AnswerComposer:
             "1. Answer in 2-4 sentences maximum.\n"
             "2. Use ONLY facts from the context. Do NOT invent any data.\n"
             "3. FOR FACTUAL ANSWERS: You MUST end your answer with exactly one markdown citation link in this format: [Official Source](URL)\n"
-            f"4. IF INFORMATION IS MISSING: Say exactly: 'The specific information is not available in our current data. However, I can help you with information on these funds: {', '.join(self.available_funds)}' "
+            "4. IF INFORMATION IS MISSING: Say exactly: 'Sorry I can't help with this particular topic' "
             "In this case, do NOT include ANY citation link or [Official Source].\n"
             "5. Do NOT include any explanations, disclaimers, or additional links."
         )
@@ -81,7 +81,7 @@ class AnswerComposer:
             print(f"[COMPOSER] LLM raw answer: {raw_answer}")
 
             # Append freshness footer only if information is available
-            if "The specific information is not available" in raw_answer:
+            if "Sorry I can't help with this particular topic" in raw_answer:
                 return raw_answer
             
             footer = f"\n\nLast updated from sources: {current_date}"

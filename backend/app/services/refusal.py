@@ -25,7 +25,7 @@ class RefusalHandler:
             response_text = f"I cannot analyze or predict historical fund performance or calculate returns. You can view the official historical data on the AMC's official factsheet or learn more at {self.educational_link}."
             
         elif intent == "OUT_OF_SCOPE_REFUSE":
-            response_text = f"My knowledge is limited to specific factual information regarding allowlisted mutual funds. I cannot answer queries outside this scope. For general queries, please check {self.sebi_link}."
+            response_text = "out of scope"
             
         else:
             # Fallback for unexpected intents

@@ -21,7 +21,6 @@ type ChatSession = {
 const SAMPLE_QUESTIONS = [
   "What is the exit load for HDFC Mid-Cap fund?",
   "What is the minimum SIP for Motilal Oswal Small Cap?",
-  "Tell me the expense ratio of ICICI Prudential Bluechip.",
 ];
 
 export default function App() {
@@ -82,7 +81,13 @@ export default function App() {
   // Auto-scroll
   useEffect(() => {
     if (hasStarted) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      const scrollContainer = document.querySelector('.main-content');
+      if (scrollContainer) {
+        scrollContainer.scrollTo({
+          top: scrollContainer.scrollHeight,
+          behavior: 'smooth'
+        });
+      }
     }
   }, [messages, hasStarted]);
 

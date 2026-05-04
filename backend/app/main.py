@@ -150,11 +150,7 @@ async def chat_query(request: ChatQueryRequest):
     
     if not retrieved_chunks:
         return ChatQueryResponse(
-            answer_text=(
-                "The specific information is not available in our current data. "
-                "However, I can help you with information on these funds: "
-                "HDFC Mid-Cap, ICICI Bluechip, Motilal Oswal Small Cap"
-            ),
+            answer_text="Sorry I can't help with this particular topic",
             refusal_flag=False,
             citation_url=None,
             last_updated_date=None
@@ -171,7 +167,7 @@ async def chat_query(request: ChatQueryRequest):
     
     final_text = validation_result["final_text"]
     last_updated = final_text.split("Last updated from sources: ")[-1] if "Last updated" in final_text else None
-    is_not_available = "The specific information is not available" in final_text
+    is_not_available = "Sorry I can't help with this particular topic" in final_text
     
     return ChatQueryResponse(
         answer_text=final_text,

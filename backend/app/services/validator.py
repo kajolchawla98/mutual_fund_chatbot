@@ -33,12 +33,12 @@ class ResponseValidator:
         reasons = []
 
         # 1. Citation link check (critical, unless it's a 'not available' response)
-        is_not_available = "The specific information is not available" in response_text
+        is_not_available = "Sorry I can't help with this particular topic" in response_text
         if not self.has_citation_link(response_text) and not is_not_available:
             reasons.append("Missing citation link.")
 
         # 2. Footer check (critical, unless it's a 'not available' response)
-        is_not_available = "The specific information is not available" in response_text
+        is_not_available = "Sorry I can't help with this particular topic" in response_text
         if not self.has_footer(response_text) and not is_not_available:
             reasons.append("Missing freshness footer date.")
 
@@ -65,8 +65,4 @@ class ResponseValidator:
 
     def get_safe_fallback(self, url=None):
         """Returns a safe fallback if validation hard-fails."""
-        return (
-            "The specific information is not available in our current data. "
-            "However, I can help you with information on these funds: "
-            "HDFC Mid-Cap, ICICI Bluechip, Motilal Oswal Small Cap"
-        )
+        return "Sorry I can't help with this particular topic"
