@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Send, Bot, Sparkles, TrendingUp, Shield, Zap } from 'lucide-react';
 import axios from 'axios';
 
