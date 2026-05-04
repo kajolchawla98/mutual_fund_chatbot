@@ -35,8 +35,14 @@ app = FastAPI(title="Mutual Fund Chatbot API")
 # Add CORS middleware to allow frontend connections
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # In production, restrict to frontend domain
-    allow_credentials=True,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "https://mutual-fund-chatbot-pmcl.vercel.app",
+        "https://mutual-fund-chatbot-pmcl-kajolchawla98s-projects.vercel.app",
+    ],
+    allow_origin_regex=r"https://mutual-fund-chatbot-pmcl.*\.vercel\.app",
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )

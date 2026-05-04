@@ -49,10 +49,11 @@ export default function App() {
 
     try {
       const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+      console.log('[DEBUG] API Base URL:', apiBaseUrl);
       const response = await axios.post(`${apiBaseUrl}/chat/query`, {
         session_id: 'session_' + Date.now(),
         user_message: query,
-      });
+      }, { timeout: 30000 });
 
       const botMsg: Message = {
         id: (Date.now() + 1).toString(),
@@ -64,13 +65,19 @@ export default function App() {
         citationUrl: response.data.citation_url || undefined,
       };
       setMessages(prev => [...prev, botMsg]);
-    } catch (error) {
-      console.error(error);
+    } catch (error: unknown) {
+      console.error('[DEBUG] API Error:', error);
+      const axiosErr = error as { code?: string; response?: { status: number } };
+      let errorText = 'Sorry, I am having trouble connecting to the factual database right now. Please try again in a moment.';
+      if (axiosErr.code === 'ERR_NETWORK') {
+        errorText = 'Unable to reach the server. This may be a network or CORS issue. Please try again shortly.';
+      } else if (axiosErr.response?.status === 429) {
+        errorText = 'Too many requests. Please wait a moment before trying again.';
+      }
       const errorMsg: Message = {
         id: (Date.now() + 1).toString(),
         type: 'bot',
-        text: 'Sorry, I am having trouble connecting to the factual database right now. Please try again in a moment.',
-        footer: `Last updated from sources: ${new Date().toISOString().split('T')[0]}`,
+        text: errorText,
       };
       setMessages(prev => [...prev, errorMsg]);
     } finally {
