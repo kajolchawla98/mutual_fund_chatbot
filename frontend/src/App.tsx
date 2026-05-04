@@ -238,7 +238,7 @@ export default function App() {
               <div className="brand-icon">
                 <TrendingUp size={20} />
               </div>
-              <h1 className="brand-title">MF Assist</h1>
+              <h1 className="brand-title">GROWW MF AI</h1>
               <span className="brand-badge">AI Powered</span>
             </div>
           </div>
@@ -266,7 +266,7 @@ export default function App() {
                   <div className="welcome-icon-ring" />
                 </div>
                 <h2 className="welcome-title">
-                  Mutual Fund <span className="text-gradient">Assistant</span>
+                  GROWW MF <span className="text-gradient">AI chatbot</span>
                 </h2>
                 <p className="welcome-subtitle">
                   Get factual information about mutual funds directly from official AMC sources. No investment advice — just verified data.
